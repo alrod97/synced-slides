@@ -113,16 +113,22 @@ python3 scripts/install_skill.py --target claude --scope project --project-dir /
 
 ### Claude.ai Upload
 
-Create a ZIP that contains the `synced-slides/` folder, not just the files inside it:
+Create a ZIP that contains the `synced-slides/` folder, not just the files inside it. The exclusions mirror `scripts/install_skill.py` so generated media, caches, and account-specific payloads stay out of the upload:
 
 ```bash
 cd ..
 zip -r synced-slides.zip synced-slides \
   -x 'synced-slides/.git/*' \
+  -x 'synced-slides/.env' 'synced-slides/.env.*' \
   -x 'synced-slides/renders/*' \
   -x 'synced-slides/snapshots/*' \
-  -x 'synced-slides/*.mp3' \
-  -x 'synced-slides/*.mp4'
+  -x 'synced-slides/.waveform-cache/*' \
+  -x 'synced-slides/.thumbnails/*' \
+  -x 'synced-slides/__pycache__/*' \
+  -x 'synced-slides/*.mp3' 'synced-slides/*.wav' 'synced-slides/*.m4a' \
+  -x 'synced-slides/*.mp4' 'synced-slides/*.mov' 'synced-slides/*.webm' \
+  -x 'synced-slides/*.payload.json' \
+  -x '*.DS_Store'
 ```
 
 Upload the ZIP in Claude settings where custom skills are managed.
