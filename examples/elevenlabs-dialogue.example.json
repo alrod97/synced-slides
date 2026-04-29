@@ -1,0 +1,15 @@
+{
+  "model_id": "eleven_v3",
+  "inputs": [
+    {
+      "speaker": "Female lead",
+      "voice_id": "FEMALE_VOICE_ID",
+      "text": "[calm, confident] You've built a deck. Now imagine it knows when to speak. [pause]"
+    },
+    {
+      "speaker": "Male cohost",
+      "voice_id": "MALE_VOICE_ID",
+      "text": "[warmly] Not a screen recording. The slides, the narration, and the timing are authored together. [pause]"
+    }
+  ]
+}

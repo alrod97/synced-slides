@@ -1,0 +1,4 @@
+interface:
+  display_name: "Synced Slides"
+  short_description: "Sync HyperFrames decks to narration"
+  default_prompt: "Use $synced-slides to create a narrated HyperFrames slide video synced to generated audio."

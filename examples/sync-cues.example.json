@@ -1,0 +1,33 @@
+{
+  "duration": 31.44,
+  "method": "Whisper word timestamps, scene starts anchored to transcript phrases.",
+  "cues": [
+    {
+      "id": "title",
+      "selector": ".scene-1",
+      "start": 0.0,
+      "end": 14.4,
+      "oldStart": 0,
+      "oldEnd": 10,
+      "anchor": "opening premise"
+    },
+    {
+      "id": "problem",
+      "selector": ".scene-2",
+      "start": 14.4,
+      "end": 27.2,
+      "oldStart": 10,
+      "oldEnd": 22,
+      "anchor": "Because if you have given the same talk"
+    },
+    {
+      "id": "cta",
+      "selector": ".scene-11",
+      "start": 27.2,
+      "end": 31.44,
+      "oldStart": 128,
+      "oldEnd": 138,
+      "anchor": "We open source the skill"
+    }
+  ]
+}

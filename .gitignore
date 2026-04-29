@@ -1,0 +1,24 @@
+.DS_Store
+.env
+.env.*
+node_modules/
+.hyperframes/
+.waveform-cache/
+.thumbnails/
+
+# Generated media
+renders/
+snapshots/
+*.mp3
+*.wav
+*.m4a
+*.mp4
+*.webm
+*.mov
+
+# Generated/private API payloads may contain account-specific IDs.
+*.payload.json
+
+# Local editor files
+*.swp
+*.swo
