@@ -51,6 +51,97 @@ dialogue-v2-selected-voices.payload.json
 
 If the selected voice changes the runtime, regenerate or add explicit `[pause]` tags. Do not assume the old cue map still fits.
 
+## Gemini Multi-Speaker
+
+`gemini-3.1-flash-tts-preview` is the production multi-speaker model. `gemini-2.5-flash-preview-tts` and `gemini-2.5-pro-preview-tts` are also supported. Pass the dialogue as a single prompt with speaker turns inline; voices are bound by speaker name in `speechConfig.multiSpeakerVoiceConfig`.
+
+```json
+{
+  "generationConfig": {
+    "responseModalities": ["AUDIO"],
+    "speechConfig": {
+      "multiSpeakerVoiceConfig": {
+        "speakerVoiceConfigs": [
+          { "speaker": "Joe",  "voiceConfig": { "prebuiltVoiceConfig": { "voiceName": "Charon" } } },
+          { "speaker": "Jane", "voiceConfig": { "prebuiltVoiceConfig": { "voiceName": "Kore" } } }
+        ]
+      }
+    }
+  }
+}
+```
+
+### Emotion and delivery
+
+Gemini interprets natural-language directives in the prompt — there is no fixed tag schema. Three layers, combinable:
+
+- Director-style preamble before the transcript: `Read warmly, like a podcast intro.`
+- Inline stage directions: `Joe: [whispers] We need to talk.`
+- Inline performance cues: `[calm]`, `[excited]`, `[laughs]`, `[shouting]`, `[sighs]`. Many work; treat the list as open-ended and verify on render.
+
+For longer scripts, include an Audio Profile / Scene / Director's Notes preamble before the transcript.
+
+### Prebuilt voices (30)
+
+Zephyr · Puck · Charon · Kore · Fenrir · Leda · Orus · Aoede · Callirrhoe · Autonoe · Enceladus · Iapetus · Umbriel · Algieba · Despina · Erinome · Algenib · Rasalgethi · Laomedeia · Achernar · Alnilam · Schedar · Gacrux · Pulcherrima · Achird · Zubenelgenubi · Vindemiatrix · Sadachbia · Sadaltager · Sulafat
+
+### Python (`google-genai`) example
+
+```python
+from google import genai
+from google.genai import types
+import wave
+
+def write_wave(path, pcm, rate=24000):
+    with wave.open(path, "wb") as wf:
+        wf.setnchannels(1); wf.setsampwidth(2); wf.setframerate(rate)
+        wf.writeframes(pcm)
+
+client = genai.Client()  # reads GEMINI_API_KEY from env
+
+prompt = """TTS the following conversation between Joe and Jane.
+Read warmly, like a podcast intro.
+Joe: [calm] You've built a deck. Now imagine it knows when to speak.
+Jane: [excited] Slides that present themselves."""
+
+response = client.models.generate_content(
+    model="gemini-3.1-flash-tts-preview",
+    contents=prompt,
+    config=types.GenerateContentConfig(
+        response_modalities=["AUDIO"],
+        speech_config=types.SpeechConfig(
+            multi_speaker_voice_config=types.MultiSpeakerVoiceConfig(
+                speaker_voice_configs=[
+                    types.SpeakerVoiceConfig(
+                        speaker="Joe",
+                        voice_config=types.VoiceConfig(
+                            prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name="Charon"),
+                        ),
+                    ),
+                    types.SpeakerVoiceConfig(
+                        speaker="Jane",
+                        voice_config=types.VoiceConfig(
+                            prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name="Kore"),
+                        ),
+                    ),
+                ]
+            )
+        ),
+    ),
+)
+
+pcm = response.candidates[0].content.parts[0].inline_data.data
+write_wave("dialogue-v1.wav", pcm)
+```
+
+### Output format and limits
+
+- Returns 16-bit signed PCM, mono, 24 kHz, base64 under `inline_data.data`. Wrap in WAV (above) or convert with `ffmpeg -f s16le -ar 24000 -ac 1 -i dialogue.pcm dialogue.mp3`.
+- 32k-token context per call; no streaming.
+- Quality drifts past a few minutes — split long scripts at scene boundaries, then concatenate.
+- The model occasionally returns text tokens instead of audio (HTTP 500). Implement retry with backoff.
+- Use `GEMINI_API_KEY` from the environment. Never commit keys or generated `*.payload.json` containing voice IDs.
+
 ## Whisper Transcription
 
 Prefer HyperFrames CLI:

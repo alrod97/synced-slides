@@ -26,6 +26,7 @@ Use the existing HyperFrames skill for composition rules and the HyperFrames CLI
 3. Prepare the narration.
    - If generating speech, write a reviewable script first.
    - For ElevenLabs dialogue, use inline performance tags such as `[pause]`, `[calm]`, `[excited]`, `[whispers]`, and `[dramatic tone]`.
+   - For Gemini multi-speaker (`gemini-3.1-flash-tts-preview`), put delivery directives inside the prompt and bind voices via `speechConfig.multiSpeakerVoiceConfig` with prebuilt voice names (Charon, Kore, Puck, Zephyr, …).
    - Store generated payloads as `*-payload.json`, but never store API keys.
    - Keep generated audio filenames versioned, for example `dialogue-v3-final.mp3`.
 
@@ -65,7 +66,7 @@ For a finished synced deck, leave these files in the project:
 ## References
 
 - Read `references/hyperframes-sync.md` for the audio tag, cue-map schema, and `syncTime()` pattern.
-- Read `references/tts-and-transcription.md` for multi-speaker script generation, ElevenLabs tags, and Whisper commands.
+- Read `references/tts-and-transcription.md` for multi-speaker script generation, ElevenLabs tags, Gemini `multiSpeakerVoiceConfig` and prebuilt voices, and Whisper commands.
 - Read `references/data-showcases.md` when the deck includes interactive maps, charts, or browser-rendered data surfaces.
 
 ## Guardrails
